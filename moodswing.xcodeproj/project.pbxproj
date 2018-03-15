@@ -26,6 +26,7 @@
 		AA35627F205A885600E6FADD /* moodswing */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = moodswing; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA356282205A885600E6FADD /* moodswing.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = moodswing.cpp; sourceTree = "<group>"; };
 		AA35628A205B0E7600E6FADD /* hello_world.mood */ = {isa = PBXFileReference; lastKnownFileType = text; path = hello_world.mood; sourceTree = "<group>"; };
+		AA35628B205B111F00E6FADD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +43,7 @@
 		AA356276205A885600E6FADD = {
 			isa = PBXGroup;
 			children = (
+				AA35628B205B111F00E6FADD /* README.md */,
 				AA356289205B0E3100E6FADD /* Tests */,
 				AA356281205A885600E6FADD /* moodswing */,
 				AA356280205A885600E6FADD /* Products */,

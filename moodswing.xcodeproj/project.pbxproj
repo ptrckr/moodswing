@@ -44,7 +44,7 @@
 			isa = PBXGroup;
 			children = (
 				AA35628B205B111F00E6FADD /* README.md */,
-				AA356289205B0E3100E6FADD /* Tests */,
+				AA356289205B0E3100E6FADD /* Examples */,
 				AA356281205A885600E6FADD /* moodswing */,
 				AA356280205A885600E6FADD /* Products */,
 			);
@@ -66,12 +66,12 @@
 			path = moodswing;
 			sourceTree = "<group>";
 		};
-		AA356289205B0E3100E6FADD /* Tests */ = {
+		AA356289205B0E3100E6FADD /* Examples */ = {
 			isa = PBXGroup;
 			children = (
 				AA35628A205B0E7600E6FADD /* hello_world.mood */,
 			);
-			path = Tests;
+			path = Examples;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

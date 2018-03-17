@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AA356283205A885600E6FADD /* moodswing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA356282205A885600E6FADD /* moodswing.cpp */; };
+		AA97AD18205D31490073FA86 /* instruction_gen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97AD17205D31490073FA86 /* instruction_gen.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +28,7 @@
 		AA356282205A885600E6FADD /* moodswing.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = moodswing.cpp; sourceTree = "<group>"; };
 		AA35628A205B0E7600E6FADD /* hello_world.mood */ = {isa = PBXFileReference; lastKnownFileType = text; path = hello_world.mood; sourceTree = "<group>"; };
 		AA35628B205B111F00E6FADD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		AA97AD17205D31490073FA86 /* instruction_gen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = instruction_gen.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +45,7 @@
 		AA356276205A885600E6FADD = {
 			isa = PBXGroup;
 			children = (
+				AA97AD16205D31010073FA86 /* Instruction Generator */,
 				AA35628B205B111F00E6FADD /* README.md */,
 				AA356289205B0E3100E6FADD /* Examples */,
 				AA356281205A885600E6FADD /* moodswing */,
@@ -72,6 +75,14 @@
 				AA35628A205B0E7600E6FADD /* hello_world.mood */,
 			);
 			path = Examples;
+			sourceTree = "<group>";
+		};
+		AA97AD16205D31010073FA86 /* Instruction Generator */ = {
+			isa = PBXGroup;
+			children = (
+				AA97AD17205D31490073FA86 /* instruction_gen.cpp */,
+			);
+			path = "Instruction Generator";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -132,6 +143,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA356283205A885600E6FADD /* moodswing.cpp in Sources */,
+				AA97AD18205D31490073FA86 /* instruction_gen.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,33 +12,55 @@
 #include <regex>
 
 namespace moodswing {
-  enum Token {
-    // STACK
-    PUSH_ZERO_ON_STACK = 9970,  // :vS
-    POP_STACK = 10642,  // :~S
-    CLEAR_STACK = 8038,  // :_S
-    INCREASE_STACK_VALUE = 3670,  // :+S
-    DECREASE_STACK_VALUE = 3838,  // :-S
-    MULTIPLY_STACK_VALUE = 3586,  // :*S
-    DIVIDE_STACK_VALUE = 2998,  // :#S
-    POWER_STACK_VALUE = 7954,  // :^S
-    SUM_STACK_VALUE = 5182,  // :=S
-    
-    // MOOD_REGISTER
-    INCREASE_MOOD_REGISTER_VALUE = 3627,  // :+R
-    DECREASE_MOOD_REGISTER_VALUE = 3793,  // :-R
-    
+  enum Instruction {
+    // DEBUG
+    PRINT_DEBUG_INFO = 0x1819,  // ;^@
+  
     // INPUT_OUTPUT
-    WRITE_MOOD_REGISTER_TO_STDOUT = 3658,  // :-O
-    WRITE_STACK_TO_STDOUT = 3659,  // ;-O
-    
+    WRITE_MOOD_REGISTER_TO_STDOUT = 0x0e4a,  // :-O
+    WRITE_STACK_TO_STDOUT = 0x0e4b,  // ;-O
+
+    // MATH
+    DIVIDE_STACK_VALUE = 0x0c1c,  // :'M
+    MULTIPLY_STACK_VALUE = 0x0d06,  // :*M
+    ADD_STACK_VALUE = 0x0d54,  // :+M
+    SUBTRACT_STACK_VALUE = 0x0df0,  // :-M
+    POW_STACK_VALUE = 0x1cde,  // :^M
+
     // MODES
-    ENABLE_ASCII_OUTPUT = 7957,  // =^S
-    ENABLE_INT_OUTPUT = 6547  // =^D
+    ENABLE_INT_OUTPUT = 0x1993,  // =^D
+    ENABLE_ASCII_OUTPUT = 0x1f15,  // =^S
+
+    // MOOD_REGISTER
+    INCREASE_MOOD_REGISTER_VALUE = 0x0e2b,  // :+R
+    DECREASE_MOOD_REGISTER_VALUE = 0x0ed1,  // :-R
+    PUSH_MOOD_REGISTER_ON_STACK = 0x267c,  // :vR
+
+    // NOOP
+    NOOP_NEGATIVE = 0x076f,  // :-(
+    NOOP_POSITIVE = 0x079c,  // :-)
+
+    // STACK
+    INCREMENT_STACK_VALUE = 0x0e56,  // :+S
+    DECREMENT_STACK_VALUE = 0x0efe,  // :-S
+    SUM_STACK_VALUE = 0x143e,  // :=S
+    CLEAR_STACK = 0x1f66,  // :_S
+    PUSH_ZERO_ON_STACK = 0x26f2,  // :vS
+    POP_STACK = 0x2992,  // :~S
+
+    // STATEMENTS
+    LOOP_START = 0x0d29,  // :+L
+    LOOP_END = 0x0dc3  // :-L
   };
   
   enum Flag {
     ASCII_MODE
+  };
+  
+  enum Mood {
+    POSITIVE = -1,
+    NEUTRAL = 0,
+    NEGATIVE = 1
   };
   
   class MoodSwing {
@@ -49,99 +71,45 @@ namespace moodswing {
       {Flag::ASCII_MODE, false}
     };
     
-    bool ExecInstruction(int token) {
-      switch (token) {
-        // STACK
-        case Token::PUSH_ZERO_ON_STACK:
-          stack.push_back(0);
-          break;
-
-        case Token::POP_STACK:
-          stack.pop_back();
-          break;
-
-        case Token::CLEAR_STACK:
-          stack.clear();
-          break;
+    Mood GetInstructionMood(std::string instruction) {
+      std::regex positive(R"((D|\)|))");
+      std::regex neutral(R"((R|O|I|M))");
+      std::regex negative(R"((S|L|\())");
+      
+      if (std::regex_search(instruction, positive)) {
+        return Mood::POSITIVE;
+      } else if (std::regex_search(instruction, neutral)) {
+        return Mood::NEUTRAL;
+      } else if (std::regex_search(instruction, negative)) {
+        return Mood::NEGATIVE;
+      }
+      
+      return Mood::NEUTRAL;
+    }
+    
+    bool ExecInstruction(int instruction) {
+      switch (instruction) {
+        // DEBUG
+        case Instruction::PRINT_DEBUG_INFO:
+          std::cout << "\n>> DEBUG:";
+          std::cout << "\n>> * STACK: ";
           
-        case Token::INCREASE_STACK_VALUE:
-          stack.back() += 1;
-          break;
-
-        case Token::DECREASE_STACK_VALUE:
-          stack.back() -= 1;
-          break;
-
-        case Token::MULTIPLY_STACK_VALUE:
-        {
-          if (stack.size() < 2) break;
-          
-          int rhd = stack.back();
-          stack.pop_back();
-          
-          int lhd = stack.back();
-          stack.pop_back();
-          
-          stack.push_back(lhd * rhd);
-          
-          break;
-        }
-
-        case Token::DIVIDE_STACK_VALUE:
-        {
-          if (stack.size() < 2) break;
-          
-          int rhd = stack.back();
-          stack.pop_back();
-          
-          int lhd = stack.back();
-          stack.pop_back();
-          
-          stack.push_back(lhd / rhd);
-          
-          break;
-        }
-          
-        case Token::POWER_STACK_VALUE:
-        {
-          if (stack.size() < 2) break;
-          
-          int exponent = stack.back();
-          stack.pop_back();
-          
-          int base = stack.back();
-          stack.pop_back();
-          
-          stack.push_back(std::pow(base, exponent));
-          
-          break;
-        }
-          
-        case Token::SUM_STACK_VALUE:
-        {
-          int sum = 0;
-          
-          for (std::vector<int>::iterator i = stack.begin(); i != stack.end(); ++i) {
-            sum += *i;
+          if (!stack.empty()) {
+            std::vector<int>::iterator i;
+            for (i = stack.begin(); i != stack.end(); ++i) {
+              std::printf("%#06x%s", *i, (i != --stack.end() ? " " : ""));
+            }
+          } else {
+            std::cout << "Empty";
           }
           
-          stack.clear();
-          stack.push_back(sum);
+          std::printf("\n>> * MOOD_REGISTER: %d\n", mood_register);
           
           break;
-        }
-
-        // MOOD_REGISTER
-        case Token::INCREASE_MOOD_REGISTER_VALUE:
-          mood_register += 1;
-          break;
-
-        case Token::DECREASE_MOOD_REGISTER_VALUE:
-          mood_register -= 1;
-          break;
-
+          
+      
         // INPUT_OUTPUT
-        case Token::WRITE_MOOD_REGISTER_TO_STDOUT:
+        case Instruction::WRITE_MOOD_REGISTER_TO_STDOUT:
           if (flags.at(Flag::ASCII_MODE)) {
             char o = static_cast<char>(mood_register);
             
@@ -156,7 +124,7 @@ namespace moodswing {
           
           break;
 
-        case Token::WRITE_STACK_TO_STDOUT:
+        case Instruction::WRITE_STACK_TO_STDOUT:
           if (flags.at(Flag::ASCII_MODE)) {
             char o = static_cast<char>(stack.back());
             
@@ -170,16 +138,154 @@ namespace moodswing {
           }
           
           break;
+      
+      
+        // MATH
+        case Instruction::ADD_STACK_VALUE:
+        {
+          if (stack.size() < 2) break;
+          
+          int rhd = stack.back();
+          stack.pop_back();
+          
+          int lhd = stack.back();
+          stack.pop_back();
+          
+          stack.push_back(lhd + rhd);
+          
+          break;
+        }
+
+        case Instruction::SUBTRACT_STACK_VALUE:
+        {
+          if (stack.size() < 2) break;
+          
+          int rhd = stack.back();
+          stack.pop_back();
+          
+          int lhd = stack.back();
+          stack.pop_back();
+          
+          stack.push_back(lhd - rhd);
+          
+          break;
+        }
+
+        case Instruction::MULTIPLY_STACK_VALUE:
+        {
+          if (stack.size() < 2) break;
+          
+          int rhd = stack.back();
+          stack.pop_back();
+          
+          int lhd = stack.back();
+          stack.pop_back();
+          
+          stack.push_back(lhd * rhd);
+          
+          break;
+        }
+
+        case Instruction::DIVIDE_STACK_VALUE:
+        {
+          if (stack.size() < 2) break;
+          
+          int rhd = stack.back();
+          stack.pop_back();
+          
+          int lhd = stack.back();
+          stack.pop_back();
+          
+          stack.push_back(lhd / rhd);
+          
+          break;
+        }
+        
+        case Instruction::POW_STACK_VALUE:
+        {
+          if (stack.size() < 2) break;
+          
+          int exponent = stack.back();
+          stack.pop_back();
+          
+          int base = stack.back();
+          stack.pop_back();
+          
+          stack.push_back(std::pow(base, exponent));
+          
+          break;
+        }
+    
 
         // MODES
-        case Token::ENABLE_ASCII_OUTPUT:
+        case Instruction::ENABLE_ASCII_OUTPUT:
           flags.at(Flag::ASCII_MODE) = true;
           break;
 
-        case Token::ENABLE_INT_OUTPUT:
+        case Instruction::ENABLE_INT_OUTPUT:
           flags.at(Flag::ASCII_MODE) = false;
           break;
+    
+    
+        // MOOD_REGISTER
+        case Instruction::INCREASE_MOOD_REGISTER_VALUE:
+          mood_register += 1;
+          break;
+
+        case Instruction::DECREASE_MOOD_REGISTER_VALUE:
+          mood_register -= 1;
+          break;
           
+        case Instruction::PUSH_MOOD_REGISTER_ON_STACK:
+          stack.push_back(mood_register);
+          break;
+          
+          
+        // NOOP
+        case Instruction::NOOP_POSITIVE:
+          break;
+
+        case Instruction::NOOP_NEGATIVE:
+          break;
+          
+         
+        // STACK
+        case Instruction::INCREMENT_STACK_VALUE:
+          stack.back() += 1;
+          break;
+
+        case Instruction::DECREMENT_STACK_VALUE:
+          stack.back() -= 1;
+          break;
+
+        case Instruction::SUM_STACK_VALUE:
+        {
+          int sum = 0;
+          
+          for (std::vector<int>::iterator i = stack.begin(); i != stack.end(); ++i) {
+            sum += *i;
+          }
+          
+          stack.clear();
+          stack.push_back(sum);
+          
+          break;
+        }
+
+        case Instruction::CLEAR_STACK:
+          stack.clear();
+          break;
+
+        case Instruction::PUSH_ZERO_ON_STACK:
+          stack.push_back(0);
+          break;
+
+        case Instruction::POP_STACK:
+          stack.pop_back();
+          break;
+
+
+        // DEFAULT
         default:
           return false;
           break;
@@ -190,7 +296,7 @@ namespace moodswing {
     
   public:
     void ParseInput(std::ifstream &input) {
-      std::regex token(R"((:|;|=)(\+|-|\*|\^|~|_|#|v|=)(S|R|O|I|D|\)|\())");
+      std::regex token(R"((:|;|=)(\+|-|\*|\^|~|_|#|v|'|=)(S|R|O|I|D|M|L|\)|\()|@)");
       int current_line = 1;
       char buff[4] = {'\0'};
       
@@ -206,6 +312,8 @@ namespace moodswing {
             if (!ExecInstruction(buff[0] + buff[1] + buff[2] * buff[1])) {
               std::printf("Parse Error: Token `%s' does not exist on line %d.\n", buff, current_line);
               return;
+            } else {
+              mood_register += GetInstructionMood(buff);
             }
           } else {
             std::printf("Parse Error: Token `%s' contains invalid characters on line %d.\n", buff, current_line);
@@ -232,6 +340,6 @@ int main(int argc, char *argv[]) {
       std::printf("I/O Error: Input file could not be opened.\n");
     }
   } else {
-    std::printf("I/O Error: Missing file argument.");
+    std::printf("I/O Error: Missing file argument.\n");
   }
 }

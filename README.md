@@ -4,42 +4,58 @@ A simple take on an esoteric programming language.
 ## Hello World
 ```
 =^S :vS :+S :+S :+S :vS :+S :+S :+S :+S
-:^S :-S :-S :-S :-S :-S :-S :-S :-S :-S
+:^M :-S :-S :-S :-S :-S :-S :-S :-S :-S
 ;-O :vS :+S :+S :vS :+S :+S :+S :+S :+S
-:^S :-S :-S :-S :=S ;-O :+S :+S :+S :+S
+:^M :-S :-S :-S :=S ;-O :+S :+S :+S :+S
 :+S :+S :+S ;-O ;-O :+S :+S :+S ;-O :_S
-:vS :+S :+S :vS :+S :+S :+S :+S :+S :^S
-;-O :vS :+S :+S :+S :*S :-S :-S :-S :-S
+:vS :+S :+S :vS :+S :+S :+S :+S :+S :^M
+;-O :vS :+S :+S :+S :*M :-S :-S :-S :-S
 :-S :-S :-S :-S :-S ;-O :vS :+S :+S :+S
-:+S :vS :+S :+S :+S :+S :+S :+S :*S :=S
+:+S :vS :+S :+S :+S :+S :+S :+S :*M :=S
 ;-O :+S :+S :+S ;-O :-S :-S :-S :-S :-S
 :-S ;-O :-S :-S :-S :-S :-S :-S :-S :-S
-;-O :vS :+S :+S :+S :#S ;-O :vS :+S :+S
-:vS :+S :+S :+S :^S :+S :+S ;-O
+;-O :vS :+S :+S :+S :'M ;-O :vS :+S :+S
+:vS :+S :+S :+S :^M :+S :+S ;-O
 
 Outputs: Hello World!
 ```
 ## Available Instructions
 
-#### STACK<br/>
-`:vS` PUSH_ZERO_ON_STACK<br/>
-`:~S` POP_STACK<br/>
-`:_S` CLEAR_STACK<br/>
-`:+S` INCREASE_STACK_VALUE<br/>
-`:-S` DECREASE_STACK_VALUE<br/>
-`:*S` MULTIPLY_STACK_VALUE<br/>
-`:#S` DIVIDE_STACK_VALUE<br/>
-`:^S` POWER_STACK_VALUE<br/>
-`:=S` SUM_STACK_VALUE<br/>
+#### DEBUG
+`;^@` PRINT_DEBUG_INFO
+  
+#### INPUT_OUTPUT
+`:-O` WRITE_MOOD_REGISTER_TO_STDOUT
+`;-O` WRITE_STACK_TO_STDOUT
 
-#### MOOD_REGISTER<br/>
-`:+R` INCREASE_MOOD_REGISTER_VALUE<br/>
-`:-R` DECREASE_MOOD_REGISTER_VALUE<br/>
-
-#### INPUT_OUTPUT<br/>
-`:-O` WRITE_MOOD_REGISTER_TO_STDOUT<br/>
-`;-O` WRITE_STACK_TO_STDOUT<br/>
+#### MATH
+`:'M` DIVIDE_STACK_VALUE
+`:*M` MULTIPLY_STACK_VALUE
+`:+M` ADD_STACK_VALUE
+`:-M` SUBTRACT_STACK_VALUE
+`:^M` POW_STACK_VALUE
 
 #### MODES
-`=^S` ENABLE_ASCII_OUTPUT<br/>
-`=^D` ENABLE_INT_OUTPUT<br/>
+`=^D` ENABLE_INT_OUTPUT
+`=^S` ENABLE_ASCII_OUTPUT
+
+#### MOOD_REGISTER
+`:+R` INCREASE_MOOD_REGISTER_VALUE
+`:-R` DECREASE_MOOD_REGISTER_VALUE
+`:vR` PUSH_MOOD_REGISTER_ON_STACK
+
+#### NOOP
+`:-(` NOOP_NEGATIVE
+`:-)`  NOOP_POSITIVE
+
+#### STACK
+`:+S` INCREMENT_STACK_VALUE
+`:-S` DECREMENT_STACK_VALUE
+`:=S` SUM_STACK_VALUE
+`:_S` CLEAR_STACK
+`:vS` PUSH_ZERO_ON_STACK
+`:~S` POP_STACK
+
+#### STATEMENTS
+`:+L` LOOP_START
+`:-L` LOOP_END
